@@ -74,5 +74,6 @@ public class Hw {
             sum= sum + i;
         }
         System.out.println("The sum of all digits from 50 to 60 are: "+sum);
-  
+    }
+}
 
