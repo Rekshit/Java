@@ -1,11 +1,11 @@
 import java.util.Scanner;
 
-// Step 1: Create a Strategy interface
+// Strategy interface
 interface PaymentStrategy {
     void pay(int amount);
 }
 
-// Step 2: Implement concrete strategies
+// Concrete strategies
 class CreditCardPayment implements PaymentStrategy {
     public void pay(int amount) {
         System.out.println("Paid " + amount + " using Credit Card.");
@@ -18,7 +18,7 @@ class UpiPayment implements PaymentStrategy {
     }
 }
 
-// Step 3: Create a Context class
+// Context class
 class ShoppingCart {
     private PaymentStrategy paymentStrategy;
 
@@ -32,7 +32,7 @@ class ShoppingCart {
     }
 }
 
-// Step 4: Test the Strategy Pattern
+// Strategy Pattern
 public class Strategypattern {
     public static void main(String[] args) {
 
