@@ -115,6 +115,36 @@ class FactoryProducer {
     }
 }
 
+// ======================================================= STRATEGY PATTERN (PAYMENT) ====================================================================
+
+interface PaymentStrategy {
+    void pay(int amount);
+}
+
+class CreditCardPayment implements PaymentStrategy {
+    public void pay(int amount) {
+        System.out.println("Paid " + amount + " using Credit Card");
+    }
+}
+
+class UpiPayment implements PaymentStrategy {
+    public void pay(int amount) {
+        System.out.println("Paid " + amount + " using UPI");
+    }
+}
+
+// Context
+class ShoppingCart {
+    private PaymentStrategy strategy;
+
+    void setStrategy(PaymentStrategy strategy) {
+        this.strategy = strategy;
+    }
+
+    void checkout(int amount) {
+        strategy.pay(amount);
+    }
+}
 
 // ================================================= COMMAND PATTERN (PLACE OR CANCEL ORDER) ====================================================================
 
@@ -129,7 +159,7 @@ class Order {
     }
 
     void cancelOrder() {
-        System.out.println("Order Cancelled!");
+        System.out.println("Order Cancelled! Deducted Money Will be refunded back shortly");
     }
 }
 
@@ -173,37 +203,6 @@ class OrderInvoker {
         } else {
             System.out.println("No command set!");
         }
-    }
-}
-
-// ======================================================= STRATEGY PATTERN (PAYMENT) ====================================================================
-
-interface PaymentStrategy {
-    void pay(int amount);
-}
-
-class CreditCardPayment implements PaymentStrategy {
-    public void pay(int amount) {
-        System.out.println("Paid " + amount + " using Credit Card");
-    }
-}
-
-class UpiPayment implements PaymentStrategy {
-    public void pay(int amount) {
-        System.out.println("Paid " + amount + " using UPI");
-    }
-}
-
-// Context
-class ShoppingCart {
-    private PaymentStrategy strategy;
-
-    void setStrategy(PaymentStrategy strategy) {
-        this.strategy = strategy;
-    }
-
-    void checkout(int amount) {
-        strategy.pay(amount);
     }
 }
 
@@ -252,28 +251,6 @@ public class Project {
             return;
         }
 
-        //ORDER
-        Order ord = new Order();
-        OrderInvoker invoker = new OrderInvoker();
-
-        System.out.println("1. Place Order");
-        System.out.println("2. Cancel Order");
-        
-        int ch = sc.nextInt();
-        
-        if (ch == 1) {
-            invoker.setCommand(new PlaceOrderCommand(ord));
-        } 
-        else if (ch == 2) {
-            invoker.setCommand(new CancelOrderCommand(ord));
-        } 
-        else {
-            System.out.println("Invalid Choice");
-            return;
-        }
-
-        invoker.run();
-
         // PAYMENT 
         ShoppingCart cart = new ShoppingCart();
 
@@ -313,7 +290,27 @@ public class Project {
 
         cart.checkout(amount);
 
-        System.out.println("\nOrder Placed Successfully!");
+        //ORDER
+        Order ord = new Order();
+        OrderInvoker invoker = new OrderInvoker();
+
+        System.out.println("1. Place Order");
+        System.out.println("2. Cancel Order");
+        
+        int ch = sc.nextInt();
+        
+        if (ch == 1) {
+            invoker.setCommand(new PlaceOrderCommand(ord));
+        } 
+        else if (ch == 2) {
+            invoker.setCommand(new CancelOrderCommand(ord));
+        } 
+        else {
+            System.out.println("Invalid Choice");
+            return;
+        }
+
+        invoker.run();
 
         sc.close();
     }
