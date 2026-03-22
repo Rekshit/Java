@@ -71,12 +71,12 @@ class OppoMobile implements Product {
 
 // ABSTRACT FACTORY
 
-abstract class AbstractFactory {
+abstract class ProductFactory {
     abstract Product getProduct(int choice);
 }
 
 // Clothing Factory
-class ClothingFactory extends AbstractFactory {
+class ClothingFactory extends ProductFactory {
     Product getProduct(int choice) {
         if (choice == 1) return new MenClothing();
         else if (choice == 2) return new WomenClothing();
@@ -86,7 +86,7 @@ class ClothingFactory extends AbstractFactory {
 }
 
 // Furniture Factory
-class FurnitureFactory extends AbstractFactory {
+class FurnitureFactory extends ProductFactory {
     Product getProduct(int choice) {
         if (choice == 1) return new WoodenFurniture();
         else if (choice == 2) return new PlasticFurniture();
@@ -96,7 +96,7 @@ class FurnitureFactory extends AbstractFactory {
 }
 
 // Mobile Factory
-class MobileFactory extends AbstractFactory {
+class MobileFactory extends ProductFactory {
     Product getProduct(int choice) {
         if (choice == 1) return new AppleMobile();
         else if (choice == 2) return new SamsungMobile();
@@ -107,7 +107,7 @@ class MobileFactory extends AbstractFactory {
 
 // Factory Producer
 class FactoryProducer {
-    static AbstractFactory getFactory(int choice) {
+    static ProductFactory getFactory(int choice) {
         if (choice == 1) return new ClothingFactory();
         else if (choice == 2) return new FurnitureFactory();
         else if (choice == 3) return new MobileFactory();
@@ -198,11 +198,7 @@ class OrderInvoker {
     }
 
     void run() {
-        if (cd != null) {
-            cd.execute();
-        } else {
-            System.out.println("No command set!");
-        }
+        cd.execute();
     }
 }
 
@@ -222,7 +218,7 @@ public class Project {
 
         int category = sc.nextInt();
 
-        AbstractFactory factory = FactoryProducer.getFactory(category);
+        ProductFactory factory = FactoryProducer.getFactory(category);
 
         if (factory == null) {
             System.out.println("Invalid Category!");
