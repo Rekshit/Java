@@ -11,18 +11,27 @@ interface Product {
 class MenClothing implements Product {
     public void showproduct() {
         System.out.println("Men Clothing Product Selected");
+        System.out.println("Pay: 1000 to buy T-Shirt");
+        System.out.println("Pay: 3000 to buy Pants");
+        System.out.println("Pay: 2000 to buy Shoes");
     }
 }
 
 class WomenClothing implements Product {
     public void showproduct() {
         System.out.println("Women Clothing Product Selected");
+        System.out.println("Pay: 1000 to buy T-Shirt");
+        System.out.println("Pay: 3000 to buy Trousers");
+        System.out.println("Pay: 2000 to buy Skirt");
     }
 }
 
 class KidsClothing implements Product {
     public void showproduct() {
         System.out.println("Kids Clothing Product Selected");
+        System.out.println("Pay: 1000 to buy T-Shirt");
+        System.out.println("Pay: 3000 to buy Pants");
+        System.out.println("Pay: 2000 to buy Shoes");
     }
 }
 
@@ -32,18 +41,27 @@ class KidsClothing implements Product {
 class WoodenFurniture implements Product {
     public void showproduct() {
         System.out.println("Wooden Furniture Selected");
+        System.out.println("Pay: 3000 to buy Chair");
+        System.out.println("Pay: 5000 to buy Dining Table");
+        System.out.println("Pay: 10000 to buy Bed");
     }
 }
 
 class PlasticFurniture implements Product {
     public void showproduct() {
         System.out.println("Plastic Furniture Selected");
+        System.out.println("Pay: 1000 to buy Plastic Chair");
+        System.out.println("Pay: 3000 to buy Kids Table");
+        System.out.println("Pay: 2000 to buy Baskets");
     }
 }
 
 class GlassFurniture implements Product {
     public void showproduct() {
         System.out.println("Glass Furniture Selected");
+        System.out.println("Pay: 10000 to buy Glass Table");
+        System.out.println("Pay: 6000 to buy Crockery");
+        System.out.println("Pay: 8000 to buy Mirror");
     }
 }
 
@@ -53,18 +71,27 @@ class GlassFurniture implements Product {
 class AppleMobile implements Product {
     public void showproduct() {
         System.out.println("Apple Mobile Selected");
+        System.out.println("Pay: 50000 to buy IPhone 16");
+        System.out.println("Pay: 100000 to buy IPhone 16 Pro");
+        System.out.println("Pay: 150000 to buy IPhone 16 Pro Max");
     }
 }
 
 class SamsungMobile implements Product {
     public void showproduct() {
         System.out.println("Samsung Mobile Selected");
+        System.out.println("Pay: 50000 to buy S25");
+        System.out.println("Pay: 100000 to buy S25 FE");
+        System.out.println("Pay: 150000 to buy S25 Ultra");
     }
 }
 
 class OppoMobile implements Product {
     public void showproduct() {
         System.out.println("Oppo Mobile Selected");
+        System.out.println("Pay: 50000 to buy F15");
+        System.out.println("Pay: 100000 to buy F15 Pro");
+        System.out.println("Pay: 150000 to buy F15 Plus");
     }
 }
 
@@ -155,11 +182,11 @@ interface Command {
 
 class Order {
     void placeOrder() {
-        System.out.println("Order Placed Successfully!");
+        System.out.println("\nOrder Placed Successfully!");
     }
 
     void cancelOrder() {
-        System.out.println("Order Cancelled! Deducted Money Will be refunded back shortly");
+        System.out.println("\nOrder Cancelled! Deducted Money Will be refunded back shortly");
     }
 }
 
@@ -199,6 +226,54 @@ class OrderInvoker {
 
     void run() {
         cd.execute();
+    }
+}
+
+// ================================================= OBSERVER PATTERN (USER AND ADMIN) ====================================================================
+
+// OBSERVER INTERFACE
+interface Observer {
+    void update(String message);
+}
+
+// USER OBSERVER
+class UserObserver implements Observer {
+    public void update(String message) {
+        System.out.println("\n==========[USER NOTIFICATION]==========");
+        System.out.println(message);
+    }
+}
+
+// ADMIN OBSERVER
+class AdminObserver implements Observer {
+    public void update(String message) {
+        System.out.println("\n==========[ADMIN NOTIFICATION]==========");
+        System.out.println(message);
+    }
+}
+
+// SUBJECT
+class OrderNotifier {
+    private List<Observer> observers = new ArrayList<>();
+
+    public void addObserver(Observer obs) {
+        observers.add(obs);
+    }
+
+    public void notifyUser(String message) {
+        for (Observer obs : observers) {
+            if (obs instanceof UserObserver) {
+                obs.update(message);
+            }
+        }
+    }
+
+    public void notifyAdmin(String message) {
+        for (Observer obs : observers) {
+            if (obs instanceof AdminObserver) {
+                obs.update(message);
+            }
+        }
     }
 }
 
@@ -297,16 +372,47 @@ public class Project {
         
         if (ch == 1) {
             invoker.setCommand(new PlaceOrderCommand(ord));
+            invoker.run();
+
+            OrderNotifier notifier = new OrderNotifier();
+            notifier.addObserver(new UserObserver());
+            notifier.addObserver(new AdminObserver());
+
+            int orderId = new Random().nextInt(9000000) + 1000000;
+
+            // USER MESSAGE
+            notifier.notifyUser("Thank you for placing your order!\n" +
+            "Your Order ID is: " + orderId + "\n" +
+            "Track here: www.shop.com/track/" + orderId);
+
+            // ADMIN MESSAGE
+            notifier.notifyAdmin("New order placed by customer.\n" +
+            "Order ID: " + orderId + "\n" +
+            "Track payment: www.admin.com/payment/" + orderId);
         } 
+
         else if (ch == 2) {
             invoker.setCommand(new CancelOrderCommand(ord));
+            invoker.run();
+
+            OrderNotifier notifier = new OrderNotifier();
+            notifier.addObserver(new UserObserver());
+            notifier.addObserver(new AdminObserver());
+
+            int orderId = new Random().nextInt(9000000) + 1000000;
+
+            // USER MESSAGE
+            notifier.notifyUser("Oops! You were just one step away from placing your order.\n" +
+            "Try again soon!");
+            
+            // ADMIN MESSAGE
+            notifier.notifyAdmin("Order ID " + orderId + " is cancelled.\n" +
+            "Refund is in progress.");
         } 
         else {
             System.out.println("Invalid Choice");
             return;
         }
-
-        invoker.run();
 
         sc.close();
     }
